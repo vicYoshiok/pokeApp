@@ -36,48 +36,10 @@ class ViewController: UIViewController {
     // MARK: funciones del ViewController
     var pokemon: Pokemon?
     var circulo2:circulo?
+    
     override func viewDidLoad() {
-//        preparación de la interface
-        
-        displayView.layer.cornerRadius  = 30
-        displayView.layer.borderWidth = 15
-        displayView.layer.borderColor = UIColor.lightGray.cgColor
-        statsView.layer.cornerRadius = 20
-        statsView.layer.borderColor = UIColor.darkGray.cgColor
-        statsView.layer.borderWidth = 5
-        let w = light1.layer.frame.size.width
-        let h = light1.layer.frame.size.height
-        var circulo1 = circulo(frame: CGRect(x: light1.layer.frame.origin.x,
-                                             y: light1.layer.frame.origin.y,
-                                             width: w + 5,
-                                             height: h + 5))
-        circulo1.backgroundColor = .clear
-        circulo1.circleColor = .lightGray
-        self.light1.addSubview(circulo1)
-        
-        let tamaño: CGFloat = 80
-          circulo2 = circulo(frame: CGRect(x: light1.layer.frame.origin.x + (w + 5 - tamaño) / 2,
-                                              y: light1.layer.frame.origin.y + (h + 5 - tamaño) / 2,
-                                              width: tamaño,
-                                              height: tamaño))
-        circulo2!.backgroundColor = .clear
-        circulo2!.circleColor = .systemBlue
-        self.light1.addSubview(circulo2!)
-        
-//        rectangulo verde
-        light2.layer.borderWidth = 5
-        light2.layer.borderColor = UIColor.lightGray.cgColor
-        light2.layer.cornerRadius = 20
-        
         // Do any additional setup after loading the view.
-//        animación rectangulo verde
-        let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
-        colorAnimation.fromValue = UIColor.green.cgColor
-        colorAnimation.toValue = UIColor.yellow.cgColor
-             colorAnimation.duration = 0.5
-             colorAnimation.autoreverses = true
-             colorAnimation.repeatCount = .infinity
-            light2.layer.add(colorAnimation, forKey: "colorAnimation")
+        self.drawShapes()
         DispatchQueue.main.async{
              let pokeTimer = Timer.scheduledTimer(timeInterval: 30,
                                                           target: self,
@@ -94,8 +56,53 @@ class ViewController: UIViewController {
     }
     
 // MARK: funciones de interface
+    func drawShapes(){
+//               preparación de la interface
+                
+                displayView.layer.cornerRadius  = 30
+                displayView.layer.borderWidth = 15
+                displayView.layer.borderColor = UIColor.lightGray.cgColor
+                statsView.layer.cornerRadius = 20
+                statsView.layer.borderColor = UIColor.darkGray.cgColor
+                statsView.layer.borderWidth = 5
+                let w = light1.layer.frame.size.width
+                let h = light1.layer.frame.size.height
+                var circulo1 = circulo(frame: CGRect(x: light1.layer.frame.origin.x,
+                                                     y: light1.layer.frame.origin.y,
+                                                     width: w + 5,
+                                                     height: h + 5))
+                circulo1.backgroundColor = .clear
+                circulo1.circleColor = .lightGray
+                self.light1.addSubview(circulo1)
+                
+                let tamaño: CGFloat = 80
+                  circulo2 = circulo(frame: CGRect(x: light1.layer.frame.origin.x + (w + 5 - tamaño) / 2,
+                                                      y: light1.layer.frame.origin.y + (h + 5 - tamaño) / 2,
+                                                      width: tamaño,
+                                                      height: tamaño))
+                circulo2!.backgroundColor = .clear
+                circulo2!.circleColor = .systemBlue
+                self.light1.addSubview(circulo2!)
+                
+        //        rectangulo verde
+                light2.layer.borderWidth = 5
+                light2.layer.borderColor = UIColor.lightGray.cgColor
+                light2.layer.cornerRadius = 20
+                
+               
+        //        animación rectangulo verde
+                let colorAnimation = CABasicAnimation(keyPath: "backgroundColor")
+                colorAnimation.fromValue = UIColor.green.cgColor
+                colorAnimation.toValue = UIColor.yellow.cgColor
+                     colorAnimation.duration = 0.5
+                     colorAnimation.autoreverses = true
+                     colorAnimation.repeatCount = .infinity
+                    light2.layer.add(colorAnimation, forKey: "colorAnimation")
+    }
+    
     
     func updateViews() {
+        
 //        función encargada de realizar la actualización de las vistas de la app
         let idString = String(pokemon!.id)
         idLabel.text = idString
@@ -106,12 +113,15 @@ class ViewController: UIViewController {
         let types = pokemon?.types.map { $0.type.name.capitalized }.joined(separator: ", ")
         print(types as Any)
         typeLabel.text = types
+        
 //        extraer los stats de la  estructura y convertirlos en un string para procesarlos en la función show stats
         let stats = pokemon!.stats.map { "\($0.stat.name): \($0.base_stat)" }.joined(separator: ", ")
         showStats(from: stats)
+        
 //        obtiene una dirección para hacer la petición de la descripción del pokemon y manda llamar la función getDescription del oobjeto pokeService
         print(pokemon?.species as Any)
         getPokemonDescription(for: (pokemon?.species.url)!)
+        
 //        realiza  descarga de la imagen del pokemon
         if let url = URL(string: pokemon!.sprites.front_default) {
                 URLSession.shared.dataTask(with: url) { data, response, error in
